@@ -1,0 +1,38 @@
+# ============================================================
+# MedRAG-Retriever — Dependencies
+# Cài tất cả: pip install -r requirements.txt
+# ============================================================
+
+# --- Core (bắt buộc) ---
+pyyaml>=6.0
+numpy>=1.24
+requests>=2.31
+
+# --- NLP / Retrieval (bắt buộc) ---
+torch>=2.1
+transformers>=4.40
+sentence-transformers>=2.7
+datasets>=2.18
+
+# FAISS: dùng faiss-cpu cho mọi máy (kể cả máy có GPU)
+# Khi chạy trên Colab T4 thì đổi thành: pip install faiss-gpu
+faiss-cpu>=1.8
+
+# --- Web app (bắt buộc) ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+streamlit>=1.33
+python-dotenv>=1.0       # đọc file .env tự động
+
+# --- LLM backend thật (chỉ cần khi bật HF hoặc Ollama) ---
+# Bỏ comment dòng nào bạn cần:
+# openai>=1.30           # cho backend openai_compatible (Ollama, vLLM)
+# bitsandbytes>=0.43     # cho load_in_4bit / load_in_8bit trên GPU
+# accelerate>=0.30       # bắt buộc kèm bitsandbytes
+
+# --- Evaluation nâng cao (tuỳ chọn) ---
+# ragas>=0.1
+
+# --- Dev / Test ---
+pytest>=8.0

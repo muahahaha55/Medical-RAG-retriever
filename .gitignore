@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Data & models (nặng)
+data/raw/*
+data/processed/*
+data/index/*
+data/models/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/index/.gitkeep
+!data/models/.gitkeep
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# PyCharm — commit .iml và modules.xml để PyCharm tự nhận src/
+# nhưng không commit workspace và run config (path phụ thuộc máy)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/runConfigurations.xml

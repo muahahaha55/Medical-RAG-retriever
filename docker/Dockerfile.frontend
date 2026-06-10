@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir streamlit requests
+
+COPY app/frontend/ ./app/frontend/
+
+EXPOSE 8501
+ENV BACKEND_URL=http://backend:8080
+CMD ["streamlit", "run", "app/frontend/streamlit_app.py", \
+     "--server.address", "0.0.0.0", "--server.port", "8501"]

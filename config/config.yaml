@@ -1,0 +1,105 @@
+# =====================================================================
+# MedRAG-Retriever — Central Configuration
+# Mọi script đọc cấu hình từ đây. Override bằng biến môi trường nếu cần.
+# =====================================================================
+
+project:
+  name: "MedRAG-Retriever"
+  seed: 42
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  index_dir: "data/index"
+  models_dir: "data/models"
+
+# ---------------------------------------------------------------------
+# Thu thập dữ liệu PubMed (NCBI E-utilities)
+# ---------------------------------------------------------------------
+data_collection:
+  # Đăng ký API key tại https://www.ncbi.nlm.nih.gov/account/ để tăng rate limit
+  ncbi_api_key: null            # hoặc đặt qua biến môi trường NCBI_API_KEY
+  email: "your-email@example.com"
+  search_terms:
+    - "diabetes mellitus"
+    - "hypertension"
+    - "chronic kidney disease"
+    - "cardiovascular disease"
+  max_abstracts: 100000         # mở rộng lên 500000 cho experiment lớn
+  batch_size: 200
+
+# ---------------------------------------------------------------------
+# Tiền xử lý & chunking
+# ---------------------------------------------------------------------
+preprocessing:
+  min_abstract_chars: 100
+  remove_duplicates: true
+  chunk_size_tokens: 384        # khuyến nghị 256-512
+  chunk_overlap_tokens: 64
+  tokenizer_for_chunking: "dmis-lab/biobert-base-cased-v1.2"
+
+# ---------------------------------------------------------------------
+# Retriever / Embeddings
+# ---------------------------------------------------------------------
+retriever:
+  # baseline | finetuned
+  active: "baseline"
+  baseline_model: "BAAI/bge-small-en-v1.5"
+  biobert_model: "pritamdeka/S-BioBert-snli-multinli-stsb"
+  finetuned_model_path: "data/models/MedicalRetriever-v1"
+  embedding_batch_size: 64
+  normalize_embeddings: true
+  max_seq_length: 384
+
+# ---------------------------------------------------------------------
+# Vector index (FAISS)
+# ---------------------------------------------------------------------
+faiss:
+  # flat_ip cho corpus nhỏ; ivf_pq cho corpus lớn
+  index_type: "flat_ip"
+  nlist: 1024                   # cho IVF
+  m_pq: 16                      # cho PQ
+  nbits: 8
+
+# ---------------------------------------------------------------------
+# Huấn luyện retriever (contrastive)
+# ---------------------------------------------------------------------
+training:
+  base_model: "dmis-lab/biobert-base-cased-v1.2"
+  loss: "mnrl"                  # mnrl (MultipleNegativesRankingLoss) | infonce
+  epochs: 3
+  batch_size: 32
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  num_hard_negatives: 1
+  output_path: "data/models/MedicalRetriever-v1"
+
+# ---------------------------------------------------------------------
+# Reranker
+# ---------------------------------------------------------------------
+reranker:
+  enabled: true
+  model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  retrieve_top_k: 50            # retriever trả về
+  rerank_top_k: 5               # reranker giữ lại
+  batch_size: 32
+
+# ---------------------------------------------------------------------
+# LLM sinh câu trả lời
+# ---------------------------------------------------------------------
+llm:
+  # backend: hf | openai_compatible | mock
+  backend: "mock"
+  model: "Qwen/Qwen2.5-7B-Instruct"
+  # endpoint cho openai_compatible (vLLM, Ollama, ...)
+  base_url: "http://localhost:8000/v1"
+  api_key: "EMPTY"
+  max_new_tokens: 512
+  temperature: 0.1
+
+# ---------------------------------------------------------------------
+# Đánh giá
+# ---------------------------------------------------------------------
+evaluation:
+  k_values: [5, 10, 20, 50]
+  ragas_enabled: false          # bật khi đã cấu hình LLM thật
