@@ -70,7 +70,7 @@ training:
   base_model: "dmis-lab/biobert-base-cased-v1.2"
   loss: "mnrl"                  # mnrl (MultipleNegativesRankingLoss) | infonce
   epochs: 3
-  batch_size: 16
+  batch_size: 24
   learning_rate: 2.0e-5
   warmup_ratio: 0.1
   num_hard_negatives: 1
