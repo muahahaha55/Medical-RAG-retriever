@@ -36,3 +36,4 @@ python-dotenv>=1.0       # đọc file .env tự động
 
 # --- Dev / Test ---
 pytest>=8.0
+bm25s>=0.2
