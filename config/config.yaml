@@ -43,7 +43,7 @@ preprocessing:
 # ---------------------------------------------------------------------
 retriever:
   # baseline | finetuned
-  active: "baseline"
+  active: "finetuned"
   baseline_model: "BAAI/bge-small-en-v1.5"
   biobert_model: "pritamdeka/S-BioBert-snli-multinli-stsb"
   finetuned_model_path: "data/models/MedicalRetriever-v1"
