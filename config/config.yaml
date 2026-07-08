@@ -18,8 +18,8 @@ paths:
 # ---------------------------------------------------------------------
 data_collection:
   # Đăng ký API key tại https://www.ncbi.nlm.nih.gov/account/ để tăng rate limit
-  ncbi_api_key: null
-  email: "phuongnguyenvietbaron123456@gmail.com"
+  ncbi_api_key: null            # hoặc đặt qua biến môi trường NCBI_API_KEY
+  email: "your-email@example.com"
   search_terms:
     - "diabetes mellitus"
     - "hypertension"
@@ -46,7 +46,11 @@ retriever:
   active: "finetuned"
   baseline_model: "BAAI/bge-small-en-v1.5"
   biobert_model: "pritamdeka/S-BioBert-snli-multinli-stsb"
-  finetuned_model_path: "data/models/MedicalRetriever-v1"
+  finetuned_model_path: "data/models/MedicalRetriever-v3"
+  # Bật hybrid: kết hợp dense (FAISS) + BM25 bằng Reciprocal Rank Fusion
+  use_hybrid: true
+  rrf_k: 60
+  hybrid_candidate_k: 50
   embedding_batch_size: 64
   normalize_embeddings: true
   max_seq_length: 256
@@ -70,7 +74,7 @@ training:
   base_model: "dmis-lab/biobert-base-cased-v1.2"
   loss: "mnrl"                  # mnrl (MultipleNegativesRankingLoss) | infonce
   epochs: 3
-  batch_size: 24
+  batch_size: 32
   learning_rate: 2.0e-5
   warmup_ratio: 0.1
   num_hard_negatives: 1

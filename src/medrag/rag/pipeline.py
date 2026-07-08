@@ -41,8 +41,15 @@ class RAGPipeline:
         retriever_model: str | None = None,
     ):
         self.cfg = config
-        self.retriever = Retriever(config=config, model_name_or_path=retriever_model)
-        self.retriever.load(index_dir)
+        if config.get("retriever.use_hybrid", False):
+            from medrag.retrieval.hybrid_retriever import HybridRetriever
+            self.retriever = HybridRetriever(config=config, model_name_or_path=retriever_model)
+            self.retriever.load(index_dir)
+            logger.info("Retriever: HYBRID (dense + BM25 RRF)")
+        else:
+            self.retriever = Retriever(config=config, model_name_or_path=retriever_model)
+            self.retriever.load(index_dir)
+            logger.info("Retriever: dense-only")
         self.reranker = Reranker(config=config)
         self.llm = LLMGenerator(config=config)
         self.retrieve_k = int(config.get("reranker.retrieve_top_k", 50))
